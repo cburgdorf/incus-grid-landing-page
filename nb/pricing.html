@@ -22,6 +22,20 @@
 					started = true;
 					var landing = null;
 					try { landing = JSON.parse(sessionStorage.getItem('incus_landing')); } catch (_) {}
+					// The first visit with consent to analytics, for the account its sign-up creates (openspec add-signup-source):
+					// campaign, referring site and entry page in incus_first_touch on incusgrid.com for 90 days, kept if already set.
+					try {
+						if (!/(?:^|;\s*)incus_first_touch=/.test(document.cookie)) {
+						  var first = landing || { url: location.href, referrer: document.referrer };
+						  var entry = new URL(first.url), query = entry.searchParams, from = '';
+						  try { from = first.referrer ? new URL(first.referrer).hostname : ''; } catch (_) {}
+						  var cut = function (value) { return (value || '').slice(0, 200); };
+						  var touch = { s: cut(query.get('utm_source')), m: cut(query.get('utm_medium')), c: cut(query.get('utm_campaign')), r: from === entry.hostname ? '' : cut(from),
+						    l: cut(entry.hostname + entry.pathname), k: query.has('gclid') ? 'gclid' : query.has('fbclid') ? 'fbclid' : '' };
+						  var shared = /(^|\.)incusgrid\.com$/.test(location.hostname) && location.hostname.indexOf('staging.') !== 0 ? '; domain=incusgrid.com' : '';
+						  document.cookie = 'incus_first_touch=' + encodeURIComponent(JSON.stringify(touch)) + '; path=/; max-age=7776000; samesite=lax' + shared + (location.protocol === 'https:' ? '; secure' : '');
+						}
+					} catch (_) {}
 					gtag('config', 'G-7Q5WFSS215', landing && landing.url !== location.href ? { page_location: landing.url, page_referrer: landing.referrer } : {});
 					document.head.appendChild(Object.assign(document.createElement('script'), { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-7Q5WFSS215' }));
 				};
@@ -29,7 +43,7 @@
 				if (stored && stored[1] === '1') startAnalytics(stored[2] === '1');
 				// After a withdrawal: the services may have rewritten their cookies while the page unloaded.
 				if (stored) {
-					var unwanted = new RegExp('^(' + (stored[1] === '0' ? '_ga|_ga_.*|' : '') + (stored[2] === '0' ? '_gcl_.*|_fbp|_fbc|' : '') + ')$');
+					var unwanted = new RegExp('^(' + (stored[1] === '0' ? '_ga|_ga_.*|incus_first_touch|' : '') + (stored[2] === '0' ? '_gcl_.*|_fbp|_fbc|' : '') + ')$');
 					document.cookie.split(';').forEach(function (part) {
 						var name = part.split('=')[0].trim();
 						if (!name || !unwanted.test(name)) return;
@@ -54,19 +68,19 @@
 		<link href="../_app/immutable/assets/0.CQR_HRKp.css" rel="stylesheet">
 		<link href="../_app/immutable/assets/Header.BdI6TBEA.css" rel="stylesheet">
 		<link href="../_app/immutable/assets/Pricing.BvlqVU8p.css" rel="stylesheet">
-		<link rel="modulepreload" href="../_app/immutable/entry/start.CJkXLeEE.js">
-		<link rel="modulepreload" href="../_app/immutable/chunks/Ui61xjJK.js">
+		<link rel="modulepreload" href="../_app/immutable/entry/start.CdkT6mO9.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BfHj-N9B.js">
 		<link rel="modulepreload" href="../_app/immutable/chunks/BrUu5C8E.js">
-		<link rel="modulepreload" href="../_app/immutable/entry/app.CtWkfsGe.js">
+		<link rel="modulepreload" href="../_app/immutable/entry/app.DhbRrdh9.js">
 		<link rel="modulepreload" href="../_app/immutable/chunks/Hn5RuzUS.js">
 		<link rel="modulepreload" href="../_app/immutable/chunks/CzSGN2TQ.js">
-		<link rel="modulepreload" href="../_app/immutable/nodes/0.BVGXU5fZ.js">
-		<link rel="modulepreload" href="../_app/immutable/chunks/Bh7QSVnz.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/0.DMqEyj84.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DhnH-2cn.js">
 		<link rel="modulepreload" href="../_app/immutable/chunks/DnQb3bBT.js">
-		<link rel="modulepreload" href="../_app/immutable/chunks/DjJmwOlx.js">
-		<link rel="modulepreload" href="../_app/immutable/nodes/4.BE9LEp9P.js">
-		<link rel="modulepreload" href="../_app/immutable/chunks/DFlVgCa0.js">
-		<link rel="modulepreload" href="../_app/immutable/chunks/wQLlwiiu.js"><title>Priser: Gratis, Pro og Livstid | IncusGrid</title><!-- HEAD_svelte-c31s98_START --><!-- HTML_TAG_START --><script>try{document.documentElement.dataset.currency=(function currencyFor(timezone) {
+		<link rel="modulepreload" href="../_app/immutable/chunks/BYmQrUWL.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/4.BFgdwtLZ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BJre50uL.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/hZEJhW3f.js"><title>Priser: Gratis, Pro og Livstid | IncusGrid</title><!-- HEAD_svelte-c31s98_START --><!-- HTML_TAG_START --><script>try{document.documentElement.dataset.currency=(function currencyFor(timezone) {
   return timezone.startsWith("Europe/") || ["Atlantic/Canary", "Atlantic/Madeira", "Atlantic/Azores"].includes(timezone) ? "EUR" : "USD";
 })(Intl.DateTimeFormat().resolvedOptions().timeZone||'')}catch(e){}</script><!-- HTML_TAG_END --><meta name="description" content="Sammenlign IncusGrids planer: en gratis konto med årsvisning over hele verden, 5-dagersvarsel og seilasplanlegger, Pro med alle måneder, alle 10 varseldager og avgangsplanlegging og 7 gratis dager i starten, eller Livstid med én betaling."><link rel="canonical" href="https://incusgrid.com/nb/pricing"><link rel="alternate" hreflang="en" href="https://incusgrid.com/pricing"><link rel="alternate" hreflang="de" href="https://incusgrid.com/de/pricing"><link rel="alternate" hreflang="fr" href="https://incusgrid.com/fr/pricing"><link rel="alternate" hreflang="it" href="https://incusgrid.com/it/pricing"><link rel="alternate" hreflang="nl" href="https://incusgrid.com/nl/pricing"><link rel="alternate" hreflang="es" href="https://incusgrid.com/es/pricing"><link rel="alternate" hreflang="sv" href="https://incusgrid.com/sv/pricing"><link rel="alternate" hreflang="da" href="https://incusgrid.com/da/pricing"><link rel="alternate" hreflang="nb" href="https://incusgrid.com/nb/pricing"><link rel="alternate" hreflang="fi" href="https://incusgrid.com/fi/pricing"><link rel="alternate" hreflang="el" href="https://incusgrid.com/el/pricing"><link rel="alternate" hreflang="hr" href="https://incusgrid.com/hr/pricing"><link rel="alternate" hreflang="tr" href="https://incusgrid.com/tr/pricing"><link rel="alternate" hreflang="pt-BR" href="https://incusgrid.com/pt-br/pricing"><link rel="alternate" hreflang="ru" href="https://incusgrid.com/ru/pricing"><link rel="alternate" hreflang="zh-Hans" href="https://incusgrid.com/zh-hans/pricing"><link rel="alternate" hreflang="hi" href="https://incusgrid.com/hi/pricing"><link rel="alternate" hreflang="ja" href="https://incusgrid.com/ja/pricing"><link rel="alternate" hreflang="ar" href="https://incusgrid.com/ar/pricing"><link rel="alternate" hreflang="x-default" href="https://incusgrid.com/pricing"><meta property="og:type" content="website"><meta property="og:url" content="https://incusgrid.com/nb/pricing"><meta property="og:title" content="Priser: Gratis, Pro og Livstid | IncusGrid"><meta property="og:description" content="Sammenlign IncusGrids planer: en gratis konto med årsvisning over hele verden, 5-dagersvarsel og seilasplanlegger, Pro med alle måneder, alle 10 varseldager og avgangsplanlegging og 7 gratis dager i starten, eller Livstid med én betaling."><meta property="og:image" content="https://incusgrid.com/images/app/og-image.jpg"><meta property="og:locale" content="nb_NO"><meta property="og:site_name" content="IncusGrid"><!-- HTML_TAG_START --><script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"IncusGrid","description":"Sammenlign IncusGrids planer: en gratis konto med årsvisning over hele verden, 5-dagersvarsel og seilasplanlegger, Pro med alle måneder, alle 10 varseldager og avgangsplanlegging og 7 gratis dager i starten, eller Livstid med én betaling.","url":"https://incusgrid.com/nb/pricing","offers":[{"@type":"Offer","name":"Pro (Månedlig)","price":3.5,"priceCurrency":"EUR","url":"https://app.incusgrid.com/?plan=monthly"},{"@type":"Offer","name":"Pro (Årlig)","price":35,"priceCurrency":"EUR","url":"https://app.incusgrid.com/?plan=yearly"},{"@type":"Offer","name":"Livstid","price":79,"priceCurrency":"EUR","url":"https://app.incusgrid.com/?plan=lifetime"},{"@type":"Offer","name":"Pro (Månedlig)","price":4,"priceCurrency":"USD","url":"https://app.incusgrid.com/?plan=monthly"},{"@type":"Offer","name":"Pro (Årlig)","price":40,"priceCurrency":"USD","url":"https://app.incusgrid.com/?plan=yearly"},{"@type":"Offer","name":"Livstid","price":89,"priceCurrency":"USD","url":"https://app.incusgrid.com/?plan=lifetime"}]}</script><!-- HTML_TAG_END --><!-- HEAD_svelte-c31s98_END -->
 	</head>
@@ -75,15 +89,15 @@
 			
 			<script>
 				{
-					__sveltekit_d3m0e7 = {
+					__sveltekit_1g35ga9 = {
 						base: new URL("..", location).pathname.slice(0, -1)
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("../_app/immutable/entry/start.CJkXLeEE.js"),
-						import("../_app/immutable/entry/app.CtWkfsGe.js")
+						import("../_app/immutable/entry/start.CdkT6mO9.js"),
+						import("../_app/immutable/entry/app.DhbRrdh9.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 4],

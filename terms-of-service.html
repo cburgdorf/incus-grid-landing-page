@@ -22,6 +22,20 @@
 					started = true;
 					var landing = null;
 					try { landing = JSON.parse(sessionStorage.getItem('incus_landing')); } catch (_) {}
+					// The first visit with consent to analytics, for the account its sign-up creates (openspec add-signup-source):
+					// campaign, referring site and entry page in incus_first_touch on incusgrid.com for 90 days, kept if already set.
+					try {
+						if (!/(?:^|;\s*)incus_first_touch=/.test(document.cookie)) {
+						  var first = landing || { url: location.href, referrer: document.referrer };
+						  var entry = new URL(first.url), query = entry.searchParams, from = '';
+						  try { from = first.referrer ? new URL(first.referrer).hostname : ''; } catch (_) {}
+						  var cut = function (value) { return (value || '').slice(0, 200); };
+						  var touch = { s: cut(query.get('utm_source')), m: cut(query.get('utm_medium')), c: cut(query.get('utm_campaign')), r: from === entry.hostname ? '' : cut(from),
+						    l: cut(entry.hostname + entry.pathname), k: query.has('gclid') ? 'gclid' : query.has('fbclid') ? 'fbclid' : '' };
+						  var shared = /(^|\.)incusgrid\.com$/.test(location.hostname) && location.hostname.indexOf('staging.') !== 0 ? '; domain=incusgrid.com' : '';
+						  document.cookie = 'incus_first_touch=' + encodeURIComponent(JSON.stringify(touch)) + '; path=/; max-age=7776000; samesite=lax' + shared + (location.protocol === 'https:' ? '; secure' : '');
+						}
+					} catch (_) {}
 					gtag('config', 'G-7Q5WFSS215', landing && landing.url !== location.href ? { page_location: landing.url, page_referrer: landing.referrer } : {});
 					document.head.appendChild(Object.assign(document.createElement('script'), { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-7Q5WFSS215' }));
 				};
@@ -29,7 +43,7 @@
 				if (stored && stored[1] === '1') startAnalytics(stored[2] === '1');
 				// After a withdrawal: the services may have rewritten their cookies while the page unloaded.
 				if (stored) {
-					var unwanted = new RegExp('^(' + (stored[1] === '0' ? '_ga|_ga_.*|' : '') + (stored[2] === '0' ? '_gcl_.*|_fbp|_fbc|' : '') + ')$');
+					var unwanted = new RegExp('^(' + (stored[1] === '0' ? '_ga|_ga_.*|incus_first_touch|' : '') + (stored[2] === '0' ? '_gcl_.*|_fbp|_fbc|' : '') + ')$');
 					document.cookie.split(';').forEach(function (part) {
 						var name = part.split('=')[0].trim();
 						if (!name || !unwanted.test(name)) return;
@@ -53,19 +67,19 @@
 		
 		<link href="./_app/immutable/assets/0.CQR_HRKp.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/Header.BdI6TBEA.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.CJkXLeEE.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/Ui61xjJK.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.CdkT6mO9.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/BfHj-N9B.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/BrUu5C8E.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.CtWkfsGe.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.DhbRrdh9.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/Hn5RuzUS.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/CzSGN2TQ.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.BVGXU5fZ.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/Bh7QSVnz.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.DMqEyj84.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/DhnH-2cn.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/DnQb3bBT.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/DjJmwOlx.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/10.DpLLyd3p.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/CN-qrnea.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/wQLlwiiu.js"><title>Terms of Service - IncusGrid</title><!-- HEAD_svelte-15ob4r5_START --><link rel="canonical" href="https://incusgrid.com/terms-of-service"><!-- HEAD_svelte-15ob4r5_END -->
+		<link rel="modulepreload" href="./_app/immutable/chunks/BYmQrUWL.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/10.DgVCv1FZ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/DGMIomJ2.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/hZEJhW3f.js"><title>Terms of Service - IncusGrid</title><!-- HEAD_svelte-15ob4r5_START --><link rel="canonical" href="https://incusgrid.com/terms-of-service"><!-- HEAD_svelte-15ob4r5_END -->
 	</head>
 	<body class="overflow-x-hidden antialiased" data-sveltekit-preload-data="hover">
 		<div style="display: contents">    <nav class="fixed inset-x-0 top-0 z-50 border-b border-ink/15 bg-paper/85 backdrop-blur-md"><div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"><a href="/" class="flex items-center gap-2.5 text-ink"><img src="/incusgrid_logo_transparent.svg" alt="" class="h-10 w-10"> <span class="text-xl font-semibold tracking-tight" data-svelte-h="svelte-bfjzel">Incus<span class="text-sea">Grid</span></span></a> </div> </nav> <div class="pt-32 pb-20 min-h-screen"><div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"><h1 class="font-display text-5xl text-ink mb-8">Terms of Service</h1> <div class="max-w-none space-y-6 leading-relaxed text-ink-soft"><p class="text-sm text-ink-soft" data-svelte-h="svelte-120zimw">Last updated: 27th December 2025</p> <section data-svelte-h="svelte-1x73nco"><h2 class="text-2xl font-semibold text-ink mb-4">1. Acceptance of Terms</h2> <p>By accessing and using IncusGrid (&quot;Service&quot;), you accept and agree to be bound by the terms
@@ -103,15 +117,15 @@
 			
 			<script>
 				{
-					__sveltekit_d3m0e7 = {
+					__sveltekit_1g35ga9 = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("./_app/immutable/entry/start.CJkXLeEE.js"),
-						import("./_app/immutable/entry/app.CtWkfsGe.js")
+						import("./_app/immutable/entry/start.CdkT6mO9.js"),
+						import("./_app/immutable/entry/app.DhbRrdh9.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 10],
